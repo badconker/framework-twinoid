@@ -43,6 +43,10 @@ class AuthTwinoid
     $json = file_get_contents($url, false, $context);
     $json = json_decode($json);
 
+    if (isset($json->error)) {
+      throw new TwinoidAPIException($json->error);
+    }
+
     $this->_expireTime = time() + $json->expires_in;
     $this->_token = $json->access_token;
   }
@@ -60,12 +64,6 @@ class AuthTwinoid
   public function getToken()
   {
     return $this->_token;
-  }
-
-  //Accesseur de l'erreur
-  public function getErrors()
-  {
-    return $this->_errors;
   }
 
   //Retourne si le token est expiré
